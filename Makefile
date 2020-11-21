@@ -13,6 +13,9 @@ pkg/apis/passboltsecrets/v1alpha1/zz_generated.deepcopy.go: pkg/apis/passboltsec
 	cp -a github.com/thegrumpylion/passbolt-secrets/* .
 	rm -rf github.com
 
+image_minikube:
+	docker build -t ${BIN} .
+
 tools:
 	go install -tags tools k8s.io/code-generator/cmd/...
 

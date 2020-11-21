@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: passbolt
+  namespace: passbolt
+  labels:
+    service: passbolt
+spec:
+  containers:
+  - name: passbolt
+    image: passbolt/passbolt:latest
+    env:
+    - name: DATASOURCES_DEFAULT_HOST
+      valueFrom:
+        configMapKeyRef:
+          name: config
+          key: dbhost
+    - name: DATASOURCES_DEFAULT_DATABASE
+      valueFrom:
+        configMapKeyRef:
+          name: config
+          key: dbname
+    - name: APP_FULL_BASE_URL
+      valueFrom:
+        configMapKeyRef:
+          name: config
+          key: base-url
+    - name: DATASOURCES_DEFAULT_USERNAME
+      valueFrom:
+        secretKeyRef:
+          name: db
+          key: username
+    - name: DATASOURCES_DEFAULT_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: db
+          key: password
+    ports:
+    - containerPort: 80
+    - containerPort: 443

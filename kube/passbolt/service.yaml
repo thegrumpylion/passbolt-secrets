@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: passbolt
+  namespace: passbolt
+spec:
+  type: NodePort
+  selector:
+    service: passbolt
+  ports:
+    - port: 80
+      name: http
+      nodePort: 80
+    - port: 443
+      name: https
+      nodePort: 443

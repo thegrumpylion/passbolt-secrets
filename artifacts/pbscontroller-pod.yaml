@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: passbolt-secrets-scontroller
+  namespace: passbolt-secrets
+spec:
+  serviceAccountName: passbolt-secrets-sa
+  containers:
+  - name: controller
+    image: pbscontroller:latest
+    imagePullPolicy: IfNotPresent
+    env:
+    - name: PASSBOLT_SEVER_FINGERPRINT
+      valueFrom:
+        configMapKeyRef:
+          name: passbolt-server
+          key: fingerprint
+    - name: PASSBOLT_URL
+      valueFrom:
+        configMapKeyRef:
+          name: passbolt-server
+          key: url
+    - name: PASSBOLT_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: passbolt-server
+          key: password
+    - name: PASSBOLT_KEY
+      valueFrom:
+        secretKeyRef:
+          name: passbolt-server
+          key: key

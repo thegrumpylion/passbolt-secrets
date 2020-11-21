@@ -4,6 +4,11 @@ metadata:
   name: passboltsecrets.passboltsecrestscontroller.greatlion.tech
 spec:
   group: passboltsecrestscontroller.greatlion.tech
+  names:
+    plural: passboltsecrets
+    singular: passboltsecret
+    kind: PassboltSecret
+  scope: Namespaced
   versions: 
     - name: v1alpha1
       served: true
@@ -23,10 +28,4 @@ spec:
                   type: string
                 username:
                   type: string
-                
 
-  names:
-    plural: passboltsecrets
-    singular: passboltsecret
-    kind: PassboltSecret
-  scope: Namespaced

@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mariadb
+  namespace: db
+  labels:
+    service: mariadb
+spec:
+  containers:
+  - name: mariadb
+    image: mariadb
+    env:
+    - name: MYSQL_ROOT_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: mariadb
+          key: password
+    - name: MYSQL_DATABASE
+      valueFrom:
+        configMapKeyRef:
+          name: mariadb
+          key: dbname

@@ -1,0 +1,15 @@
+FROM golang:1.15-buster AS builder
+
+COPY . /build/
+
+WORKDIR /build
+
+RUN make tools
+
+RUN make
+
+FROM scratch
+
+COPY --from=builder /build/pbscontroller /
+
+ENTRYPOINT [ "/pbscontroller" ]
