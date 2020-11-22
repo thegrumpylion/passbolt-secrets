@@ -6,6 +6,6 @@ rules:
 - apiGroups: [""]
   resources: ["secrets", "events"]
   verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
-- apiGroups: ["passboltsecrestscontroller.greatlion.tech"]
+- apiGroups: ["passboltsecrets.greatlion.tech"]
   resources: ["passboltsecrets"]
   verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]

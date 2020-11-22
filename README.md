@@ -9,7 +9,7 @@ alpha
 ## PassboltSecret Resource
 
 ```yaml
-apiVersion: passboltsecrestscontroller.greatlion.tech/v1alpha1
+apiVersion: passboltsecrets.greatlion.tech/v1alpha1
 kind: PassboltSecret
 metadata:
   name: example-secret
@@ -33,7 +33,7 @@ data:
 ### Get by ID
 
 ```yaml
-apiVersion: passboltsecrestscontroller.greatlion.tech/v1alpha1
+apiVersion: passboltsecrets.greatlion.tech/v1alpha1
 kind: PassboltSecret
 metadata:
   id: 25d52ee9-efcd-443d-bee9-aa167d3b3da2
@@ -47,7 +47,7 @@ spec:
 You can customize the resulting secret by providing key names for each passbolt resource filed and specify the name.
 
 ```yaml
-apiVersion: passboltsecrestscontroller.greatlion.tech/v1alpha1
+apiVersion: passboltsecrets.greatlion.tech/v1alpha1
 kind: PassboltSecret
 metadata:
   name: example-secret
@@ -129,6 +129,12 @@ kubectl create configmap -n passbolt config \
 kubectl create -f example/passbolt/pod.yaml
 
 kubectl create -f example/passbolt/service.yaml
+```
+
+Wait for passbolt to initialize by checking the logs:
+
+```sh
+kubectl logs -n passbolt passbolt
 ```
 
 After passbolt is up, initiate configuration with the following:

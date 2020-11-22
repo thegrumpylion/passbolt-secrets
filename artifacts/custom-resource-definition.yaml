@@ -1,9 +1,9 @@
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
-  name: passboltsecrets.passboltsecrestscontroller.greatlion.tech
+  name: passboltsecrets.passboltsecrets.greatlion.tech
 spec:
-  group: passboltsecrestscontroller.greatlion.tech
+  group: passboltsecrets.greatlion.tech
   names:
     plural: passboltsecrets
     singular: passboltsecret
