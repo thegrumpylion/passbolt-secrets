@@ -1,6 +1,6 @@
 # passbolt-secrets
 
-Generate Kubernetes secrets from Passbolt
+Generate Kubernetes secrets from Passbolt.
 
 ## State
 
@@ -18,7 +18,7 @@ spec:
     name: my_very_secret
 ```
 
-This will look for passbolt resource `my_very_secret` and create the following Kubernetes secret in default namespace
+This will look for passbolt resource `my_very_secret` and create the following Kubernetes secret in default namespace.
 
 ```yaml
 apiVersion: v1
@@ -44,7 +44,7 @@ spec:
 
 ### Full Options
 
-You can customize the resulting secret by providing key names for each passbolt resource filed and specify the name
+You can customize the resulting secret by providing key names for each passbolt resource filed and specify the name.
 
 ```yaml
 apiVersion: passboltsecrestscontroller.greatlion.tech/v1alpha1
@@ -92,7 +92,7 @@ minikube start --extra-config=apiserver.service-node-port-range=1-65535
 ```
 
 
-Add a line in `/etc/hosts` that point to minikube's ip address to access passbolt web UI later
+Add a line in `/etc/hosts` that point to minikube's ip address to access passbolt web UI later.
 
 ```sh
 echo "$(minikube ip) pass.bolt" | sudo tee -a /etc/hosts
@@ -131,7 +131,7 @@ kubectl create -f example/passbolt/pod.yaml
 kubectl create -f example/passbolt/service.yaml
 ```
 
-After passbolt is up, initiate configuration with the following
+After passbolt is up, initiate configuration with the following:
 
 ```sh
 kubectl exec -it -n passbolt passbolt -- su -m -c "/var/www/passbolt/bin/cake passbolt register_user -u john.doe@example.com -f john -l doe -r admin" -s /bin/sh www-data
@@ -158,7 +158,7 @@ eval `minikube docker-env`
 make image_build
 ```
 
-Kubernetes resources
+Create Kubernetes resources for passbolt-secret-controller.
 
 ```sh
 kubectl create -f artifacts/namespace.yaml
@@ -182,7 +182,7 @@ kubectl create configmap -n passbolt-secrets passbolt-server \
     --from-literal url=https://passbolt.passbolt.svc.cluster.local
 ```
 
-Use your downloaded private key file and passphrase to create the secret
+Use your downloaded private key file and passphrase to create the secret.
 
 ```sh
 kubectl create secret generic -n passbolt-secrets passbolt-server \
@@ -190,7 +190,7 @@ kubectl create secret generic -n passbolt-secrets passbolt-server \
     --from-literal password=<passphrase>
 ```
 
-Finally create the controller pod
+Finally, create the controller pod.
 
 ```sh
 kubectl create -f artifacts/controller-pod.yaml
