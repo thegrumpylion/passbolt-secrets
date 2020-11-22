@@ -124,7 +124,7 @@ func (c *Controller) Run(threadiness int, stopCh <-chan struct{}) error {
 	defer c.workqueue.ShutDown()
 
 	// Start the informer factories to begin populating the informer caches
-	klog.Info("Starting Foo controller")
+	klog.Info("Starting PassboltSecrets controller")
 
 	// Wait for the caches to be synced before starting workers
 	klog.Info("Waiting for informer caches to sync")
@@ -151,6 +151,7 @@ func (c *Controller) runWorker() {
 }
 
 func (c *Controller) processNextWorkItem() bool {
+
 	obj, shutdown := c.workqueue.Get()
 
 	if shutdown {
@@ -308,14 +309,36 @@ func (c *Controller) deletePassboltSecret(obj interface{}) {
 
 func (c *Controller) newSecret(ps *psv1alpha1.PassboltSecret) (*corev1.Secret, error) {
 
-	r, err := c.client.GetResource(context.TODO(), ps.Spec.ID)
-	if err != nil {
-		return nil, err
+	var res *passbolt.Resource
+	var sec *passbolt.Secret
+	var err error
+
+	if ps.Spec.Source.ID != "" {
+		res, err = c.client.GetResource(context.TODO(), ps.Spec.Source.ID)
+		if err != nil {
+			return nil, fmt.Errorf("could not get passbolt resource: %v", err)
+		}
+		sec, err = c.client.GetSecret(context.TODO(), ps.Spec.Source.ID)
+		if err != nil {
+			return nil, fmt.Errorf("could not get passbolt secret: %v", err)
+		}
+	} else if ps.Spec.Source.Name != "" {
+		resrs, err := c.client.GetResources(context.Background(), &passbolt.GetResourcesOptions{ContainSecret: true})
+		if err != nil {
+			return nil, fmt.Errorf("could not get passbolt resources: %v", err)
+		}
+		for _, r := range resrs {
+			if r.Name == ps.Spec.Source.Name {
+				res = &passbolt.Resource{}
+				*res = r
+				sec = &passbolt.Secret{}
+				*sec = r.Secrets[0]
+			}
+		}
 	}
 
-	sec, err := c.client.GetSecret(context.TODO(), ps.Spec.ID)
-	if err != nil {
-		return nil, err
+	if res == nil || sec == nil {
+		return nil, stderrors.New("resource or secret cannot be nil")
 	}
 
 	s, err := passbolt.DecryptMessage(c.privateKey, c.password, []byte(sec.Data))
@@ -325,20 +348,38 @@ func (c *Controller) newSecret(ps *psv1alpha1.PassboltSecret) (*corev1.Secret, e
 
 	data := map[string][]byte{}
 
+	// set secret key and value
 	secKey := "secret"
-	if ps.Spec.Secret != "" {
-		secKey = ps.Spec.Secret
+	if ps.Spec.SecretKey != "" {
+		secKey = ps.Spec.SecretKey
 	}
-
 	data[secKey] = s
 
-	if ps.Spec.Username != "" {
-		data[ps.Spec.Username] = []byte(r.Username)
+	// set username key and value if set
+	if ps.Spec.UsernameKey != "" {
+		if res.Username == "" {
+			return nil, stderrors.New("Username expected to to have value but is empty")
+		}
+		data[ps.Spec.UsernameKey] = []byte(res.Username)
+	}
+
+	// set url key and value if set
+	if ps.Spec.URLKey != "" {
+		if res.URI == "" {
+			return nil, stderrors.New("URL expected to to have value but is empty")
+		}
+		data[ps.Spec.URLKey] = []byte(res.URI)
+	}
+
+	// resource name
+	name := res.Name
+	if ps.Spec.Name != "" {
+		name = ps.Spec.Name
 	}
 
 	return &corev1.Secret{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      ps.Spec.Name,
+			Name:      name,
 			Namespace: ps.Namespace,
 			OwnerReferences: []metav1.OwnerReference{
 				*metav1.NewControllerRef(ps, psv1alpha1.SchemeGroupVersion.WithKind("PassboltSecret")),

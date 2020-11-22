@@ -4,5 +4,8 @@ metadata:
   name: secrets-manager
 rules:
 - apiGroups: [""]
-  resources: ["secrets"]
-  verbs: ["get", "watch", "list", "create", "delete"]
+  resources: ["secrets", "events"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+- apiGroups: ["passboltsecrestscontroller.greatlion.tech"]
+  resources: ["passboltsecrets"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]

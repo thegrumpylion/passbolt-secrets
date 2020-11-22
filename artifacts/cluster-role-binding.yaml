@@ -5,8 +5,8 @@ metadata:
 subjects:
 - kind: ServiceAccount
   name: passbolt-secrets-sa
-  namespace: kube-system
+  namespace: passbolt-secrets
 roleRef:
   kind: ClusterRole
-  name: secret-reader
+  name: secrets-manager
   apiGroup: rbac.authorization.k8s.io

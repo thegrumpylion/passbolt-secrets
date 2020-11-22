@@ -1,6 +1,7 @@
 BIN ?= pbscontroller
+IMAGE_TAG ?= passbolt-secrets-controller
 
-${BIN}: cmd/main.go pkg/apis/passboltsecrets/v1alpha1/zz_generated.deepcopy.go
+${BIN}: cmd/main.go pkg/controller/controller.go pkg/apis/passboltsecrets/v1alpha1/zz_generated.deepcopy.go
 	CGO_ENABLED=0 go build -tags netgo -o $@ ./cmd
 
 pkg/apis/passboltsecrets/v1alpha1/zz_generated.deepcopy.go: pkg/apis/passboltsecrets/v1alpha1/types.go
@@ -13,8 +14,15 @@ pkg/apis/passboltsecrets/v1alpha1/zz_generated.deepcopy.go: pkg/apis/passboltsec
 	cp -a github.com/thegrumpylion/passbolt-secrets/* .
 	rm -rf github.com
 
-image_minikube:
-	docker build -t ${BIN} .
+image: ${BIN}
+	docker build -t ${IMAGE_TAG} .
+
+image_build:
+	docker build -f Dockerfile.build -t ${IMAGE_TAG} .
+
+deploy:
+	kubectl delete pod -n passbolt-secrets passbolt-secrets-scontroller
+	kubectl create -f artifacts/pbscontroller-pod.yaml
 
 tools:
 	go install -tags tools k8s.io/code-generator/cmd/...

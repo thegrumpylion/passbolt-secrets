@@ -32,17 +32,24 @@ type PassboltSecret struct {
 	Status PassboltSecretStatus `json:"status"`
 }
 
+type PassboltSecretSource struct {
+	Name string `json:"name"`
+	ID   string `json:"id"`
+}
+
 // PassboltSecretSpec is the spec for a PassboltSecret resource
 type PassboltSecretSpec struct {
-	ID       string `json:"id"`
-	Name     string `json:"name"`
-	Secret   string `json:"secret"`
-	Username string `json:"username"`
+	Source      PassboltSecretSource `json:"source"`
+	Name        string               `json:"name"`
+	SecretKey   string               `json:"secretKey"`
+	UsernameKey string               `json:"usernameKey"`
+	URLKey      string               `json:"urlKey"`
 }
 
 // PassboltSecretStatus is the status for a PassboltSecret resource
 type PassboltSecretStatus struct {
-	Created bool `json:"created"`
+	Created bool   `json:"created"`
+	Error   string `json:"error,omitempty"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object

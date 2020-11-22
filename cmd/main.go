@@ -1,7 +1,6 @@
 package main
 
 import (
-	"io/ioutil"
 	"time"
 
 	"github.com/alexflint/go-arg"
@@ -20,10 +19,10 @@ func main() {
 	args := &struct {
 		MasterURL           string
 		KubeConfig          string
-		PassboltAddress     string
-		PassboltFingerprint string
-		PassboltPassword    string
-		PassboltKeyFile     string
+		PassboltURL         string `arg:"env:PASSBOLT_URL"`
+		PassboltFingerprint string `arg:"env:PASSBOLT_FINGERPRINT"`
+		PassboltPassword    string `arg:"env:PASSBOLT_PASSWORD"`
+		PassboltKey         string `arg:"env:PASSBOLT_KEY"`
 	}{}
 
 	arg.MustParse(args)
@@ -51,21 +50,16 @@ func main() {
 	kubeInformerFactory := informers.NewSharedInformerFactory(kubeClient, time.Second*30)
 	psInformerFactory := psinformers.NewSharedInformerFactory(psClient, time.Second*30)
 
-	keyData, err := ioutil.ReadFile(args.PassboltKeyFile)
-	if err != nil {
-		klog.Fatalf("Error reading passbolt key file: %s", err.Error())
-	}
-
 	controller, err := controller.New(controller.KubeConfig{
 		KubeClientset:          kubeClient,
 		PassboltClientset:      psClient,
 		SecretInformer:         kubeInformerFactory.Core().V1().Secrets(),
 		PassboltSecretInformer: psInformerFactory.Passboltsecrets().V1alpha1().PassboltSecrets(),
 	}, controller.PassboltConfig{
-		Address:           args.PassboltAddress,
+		Address:           args.PassboltURL,
 		ServerFingerprint: args.PassboltFingerprint,
 		UserPassword:      args.PassboltPassword,
-		UserPrivKey:       string(keyData),
+		UserPrivKey:       args.PassboltKey,
 	})
 	if err != nil {
 		klog.Fatalf("Error creating new controller: %s", err.Error())

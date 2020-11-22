@@ -20,12 +20,19 @@ spec:
             spec:
               type: object
               properties:
-                id:
-                  type: string
+                source:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    id:
+                      type: string
                 name:
                   type: string
-                secret:
+                secretKey:
                   type: string
-                username:
+                usernameKey:
+                  type: string
+                urlKey:
                   type: string
 

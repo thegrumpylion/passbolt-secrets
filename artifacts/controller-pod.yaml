@@ -7,10 +7,10 @@ spec:
   serviceAccountName: passbolt-secrets-sa
   containers:
   - name: controller
-    image: pbscontroller:latest
+    image: passbolt-secrets-controller
     imagePullPolicy: IfNotPresent
     env:
-    - name: PASSBOLT_SEVER_FINGERPRINT
+    - name: PASSBOLT_FINGERPRINT
       valueFrom:
         configMapKeyRef:
           name: passbolt-server

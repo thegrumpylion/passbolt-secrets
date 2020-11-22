@@ -6,15 +6,20 @@ spec:
   containers:
     - name: tester
       image: busybox
-      command: ['sh', '-c', 'echo Credentails: $USERNAME:$PASSWORD  && sleep 360']
+      command: ['sh', '-c', 'echo Credentails: $USERNAME:$PASSWORD @ $TARGET  && sleep 360']
       env:
       - name: USERNAME
         valueFrom:
-          secretRef:
+          secretKeyRef:
             name: my-secret
             key: username
       - name: PASSWORD
         valueFrom:
-          secretRef:
+          secretKeyRef:
             name: my-secret
             key: password
+      - name: TARGET
+        valueFrom:
+          secretKeyRef:
+            name: my-secret
+            key: target
