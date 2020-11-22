@@ -36,10 +36,10 @@ data:
 apiVersion: passboltsecrets.greatlion.tech/v1alpha1
 kind: PassboltSecret
 metadata:
-  id: 25d52ee9-efcd-443d-bee9-aa167d3b3da2
+  name: example-secret
 spec:
   source:
-    name: my_very_secret
+    id: 25d52ee9-efcd-443d-bee9-aa167d3b3da2
 ```
 
 ### Full Options
